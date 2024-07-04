@@ -5,18 +5,18 @@ const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 require('dotenv').config()
 
-//Model
+
 const { User } = require('./models/User.js')
 const { conectToDatabase } = require('./config/mongo.js')
 const Exercise = require('./models/Exercise.js')
 conectToDatabase();
 
-//Globel middleware
+
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(express.static('public'))
 
-//Routing
+
 app
   .get('/', (req, res) => {
     res.sendFile(__dirname + '/views/index.html')
@@ -84,28 +84,8 @@ app
       res.json({ error: 'not ok' })
     }
   })
-  // .get('/api/users/:_id/logs', async (req, res) => {
-
-  //   const { from, to, limit } = req.query
-
-  //   const id = req.params._id
-  //   const user = await User.findById(id);
-  //   const count = await Exercise.countDocuments({ username: { $eq: user.username } })
-  //   const docs = await Exercise.find({ username: user.username })
-  //   const logs = docs.map(doc => ({
-  //     description: doc.description,
-  //     duration: doc.duration,
-  //     date: doc.date.toDateString()
-  //   }))
-  //   const finalRes = {
-  //     username: user.username,
-  //     count: Number(count),
-  //   }
-
-  //   finalRes.log = logs;
-  //   res.json(finalRes)
-  // })
-  app.get('/api/users/:_id/logs', async (req, res) => {
+  
+  .get('/api/users/:_id/logs', async (req, res) => {
     const { from, to, limit } = req.query;
     const id = req.params._id;
   
@@ -117,7 +97,7 @@ app
   
       let query = { username: user.username };
   
-      // Filter logs by date range if from and/or to are provided
+
       if (from || to) {
         query.date = {};
         if (from) {
@@ -127,8 +107,7 @@ app
           query.date.$lte = new Date(to);
         }
       }
-  
-      // Fetch logs with optional filtering and limiting
+
       let logsQuery = Exercise.find(query);
   
       if (limit) {
@@ -157,7 +136,7 @@ app
     }
   });
   
-//Server
+
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log('Your app is listening on port ' + listener.address().port)
 })
